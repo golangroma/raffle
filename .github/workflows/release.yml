@@ -1,13 +1,12 @@
-name: Test Release
+name: Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+     - "*"
 
 jobs:
-  test-release:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +23,7 @@ jobs:
       with:
         distribution: goreleaser
         version: latest
-        args: release --rm-dist --snapshot
+        args: release --rm-dist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
