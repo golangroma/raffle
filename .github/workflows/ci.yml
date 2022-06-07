@@ -1,6 +1,10 @@
-name: Run
+name: CI
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,4 +21,4 @@ jobs:
       run: go build -v ./cmd/raffle
 
     - name: Run
-      run: ./raffle list ${GITHUB_REPOSITORY}
+      run: go test -v ./...
