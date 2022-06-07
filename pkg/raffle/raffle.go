@@ -6,9 +6,10 @@ import (
 	"github.com/google/go-github/v45/github"
 )
 
-func GetAllIssues(client *github.Client, user, repo string) ([]*github.Issue, error) {
+func GetIssues(client *github.Client, user, repo string, labels []string) ([]*github.Issue, error) {
 	opt := &github.IssueListByRepoOptions{
 		ListOptions: github.ListOptions{PerPage: 50},
+		Labels:      labels,
 	}
 
 	var allIssues []*github.Issue

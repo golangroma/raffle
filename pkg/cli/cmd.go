@@ -30,7 +30,7 @@ func NewRootCommand() *cobra.Command {
 }
 
 func NewListCommand() *cobra.Command {
-	return &cobra.Command{
+	listCmd := &cobra.Command{
 		Use:           "list",
 		Short:         "list partecipants",
 		Args:          UserRepoArg(),
@@ -41,12 +41,14 @@ func NewListCommand() *cobra.Command {
 			user, repo := userRepo[0], userRepo[1]
 
 			client := github.NewClient(nil)
-			allIssues, err := raffle.GetAllIssues(client, user, repo)
+
+			labels, _ := cmd.Flags().GetStringSlice("label")
+			issues, err := raffle.GetIssues(client, user, repo, labels)
 			if err != nil {
 				return err
 			}
 
-			users := raffle.GetUsersFromIssues(allIssues)
+			users := raffle.GetUsersFromIssues(issues)
 			sort.Strings(users)
 
 			fmt.Printf("There are %d partecipants:\n", len(users))
@@ -58,10 +60,14 @@ func NewListCommand() *cobra.Command {
 			return nil
 		},
 	}
+
+	listCmd.Flags().StringSlice("label", []string{}, "labels")
+
+	return listCmd
 }
 
 func NewRunCommand() *cobra.Command {
-	return &cobra.Command{
+	runCmd := &cobra.Command{
 		Use:           "run",
 		Short:         "run raffle",
 		Args:          UserRepoArg(),
@@ -72,12 +78,14 @@ func NewRunCommand() *cobra.Command {
 			user, repo := userRepo[0], userRepo[1]
 
 			client := github.NewClient(nil)
-			allIssues, err := raffle.GetAllIssues(client, user, repo)
+
+			labels, _ := cmd.Flags().GetStringSlice("label")
+			issues, err := raffle.GetIssues(client, user, repo, labels)
 			if err != nil {
 				return err
 			}
 
-			users := raffle.GetUsersFromIssues(allIssues)
+			users := raffle.GetUsersFromIssues(issues)
 
 			rand.Seed(time.Now().UnixNano())
 			rand.Shuffle(len(users), func(i, j int) {
@@ -87,6 +95,10 @@ func NewRunCommand() *cobra.Command {
 			return nil
 		},
 	}
+
+	runCmd.Flags().StringSlice("label", []string{}, "labels")
+
+	return runCmd
 }
 
 func UserRepoArg() cobra.PositionalArgs {
