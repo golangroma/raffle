@@ -17,5 +17,8 @@ jobs:
       with:
         go-version: 1.18
 
+    - name: Install goreleaser
+      run: go install github.com/goreleaser/goreleaser@latest
+
     - name: Test Release
       run: goreleaser release --snapshot
