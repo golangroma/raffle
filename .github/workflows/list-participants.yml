@@ -1,6 +1,11 @@
 name: List Participants
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      label:
+        description: "Label used to filter the issues"
+        required: false
 
 jobs:
   build:
@@ -16,4 +21,4 @@ jobs:
         run: go build -v ./cmd/raffle
 
       - name: Run
-        run: ./raffle list ${GITHUB_REPOSITORY}
+        run: ./raffle list  --label "${{ github.event.inputs.label }}" ${GITHUB_REPOSITORY}
