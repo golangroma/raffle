@@ -13,7 +13,16 @@ type IssueService interface {
 	ListByRepo(ctx context.Context, owner, repo string, opts *github.IssueListByRepoOptions) ([]*github.Issue, *github.Response, error)
 }
 
-func GetIssues(issueService IssueService, user, repo string, labels []string) ([]*github.Issue, error) {
+func getUsersFromIssues(issueService IssueService, user, repo string, labels []string) ([]string, error) {
+	issues, err := getIssues(issueService, user, repo, labels)
+	if err != nil {
+		return nil, err
+	}
+
+	return getUniqueUsersFromIssues(issues), nil
+}
+
+func getIssues(issueService IssueService, user, repo string, labels []string) ([]*github.Issue, error) {
 	opt := &github.IssueListByRepoOptions{
 		ListOptions: github.ListOptions{PerPage: 50},
 		Labels:      labels,
@@ -35,7 +44,7 @@ func GetIssues(issueService IssueService, user, repo string, labels []string) ([
 	return allIssues, nil
 }
 
-func GetUsersFromIssues(issues []*github.Issue) []string {
+func getUniqueUsersFromIssues(issues []*github.Issue) []string {
 	users := []string{}
 
 	usersMap := make(map[string]struct{})
