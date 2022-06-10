@@ -6,7 +6,14 @@ import (
 	"github.com/google/go-github/v45/github"
 )
 
-func GetIssues(client *github.Client, user, repo string, labels []string) ([]*github.Issue, error) {
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate . IssueService
+type IssueService interface {
+	ListByRepo(ctx context.Context, owner, repo string, opts *github.IssueListByRepoOptions) ([]*github.Issue, *github.Response, error)
+}
+
+func GetIssues(issueService IssueService, user, repo string, labels []string) ([]*github.Issue, error) {
 	opt := &github.IssueListByRepoOptions{
 		ListOptions: github.ListOptions{PerPage: 50},
 		Labels:      labels,
@@ -14,7 +21,7 @@ func GetIssues(client *github.Client, user, repo string, labels []string) ([]*gi
 
 	var allIssues []*github.Issue
 	for {
-		issues, resp, err := client.Issues.ListByRepo(context.Background(), user, repo, opt)
+		issues, resp, err := issueService.ListByRepo(context.Background(), user, repo, opt)
 		if err != nil {
 			return nil, err
 		}

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/golangroma/meetup-20220614/pkg/cli"
+	"github.com/golangroma/raffle/pkg/cli"
 )
 
 func main() {

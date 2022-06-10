@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golangroma/meetup-20220614/pkg/raffle"
+	"github.com/golangroma/raffle/pkg/raffle"
 	"github.com/google/go-github/v45/github"
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func NewListCommand() *cobra.Command {
 			client := github.NewClient(nil)
 
 			labels, _ := cmd.Flags().GetStringSlice("label")
-			issues, err := raffle.GetIssues(client, user, repo, labels)
+			issues, err := raffle.GetIssues(client.Issues, user, repo, labels)
 			if err != nil {
 				return err
 			}
@@ -80,7 +80,7 @@ func NewRunCommand() *cobra.Command {
 			client := github.NewClient(nil)
 
 			labels, _ := cmd.Flags().GetStringSlice("label")
-			issues, err := raffle.GetIssues(client, user, repo, labels)
+			issues, err := raffle.GetIssues(client.Issues, user, repo, labels)
 			if err != nil {
 				return err
 			}
