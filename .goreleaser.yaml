@@ -1,6 +1,3 @@
-release:
-  disable: true
-
 before:
   hooks:
     - go mod tidy
